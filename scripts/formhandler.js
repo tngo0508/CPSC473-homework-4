@@ -36,10 +36,10 @@
       var emailAddress = event.target.value;
       var message = "";
       if (fn(emailAddress)) {
-        event.target.setCustomValidity("");
+        $(event.target).setCustomValidity("");
       } else {
         message = emailAddress + " is not an authorized email address!";
-        event.target.setCustomValidity(message);
+        $(event.target).setCustomValidity(message);
       }
     });
   };

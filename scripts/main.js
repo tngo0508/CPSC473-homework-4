@@ -2,13 +2,17 @@
   "use strict";
   var FORM_SELECTOR = "[data-coffee-order=form]";
   var CHECKLIST_SELECTOR = "[data-coffee-order=checklist]";
+  var SERVER_URL = "http://coffeerun-v2-rest-api.herokuapp.com/api/coffeeorders";
   var App = window.App;
   var Truck = App.Truck;
   var Datastore = App.Datastore;
+  var RemoteDataStore = App.RemoteDataStore;
   var FormHandler = App.FormHandler;
   var Validation = App.Validation;
   var CheckList = App.CheckList;
-  var myTruck = new Truck("ncc-1701", new Datastore());
+  var remoteDS = new RemoteDataStore(SERVER_URL);
+  var webshim = window.webshim;
+  var myTruck = new Truck("ncc-1701", remoteDS);
   window.myTruck = myTruck;
   var checkList = new CheckList(CHECKLIST_SELECTOR);
   checkList.addClickHandler(myTruck.deliverOrder.bind(myTruck));
@@ -20,4 +24,10 @@
   });
 
   formHandler.addInputHandler(Validation.isCompanyEmail);
+
+  webshim.polyfill("forms forms-ext");
+  webshim.setOptions("forms", {
+    addValidators: true,
+    lazyCustomMessages: true
+  });
 })(window);
