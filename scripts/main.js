@@ -30,4 +30,10 @@
     addValidators: true,
     lazyCustomMessages: true
   });
+
+  remoteDS.getAll(function(coffeeorders) {
+    coffeeorders.forEach(function(coffeeOrder) {
+      checkList.addRow.call(checkList, coffeeOrder);
+    });
+  });
 })(window);

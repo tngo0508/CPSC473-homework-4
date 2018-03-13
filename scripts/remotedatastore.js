@@ -17,24 +17,123 @@
     //   console.log(serverResponse);
     // });
 
-    $.ajax(this.serverUrl, {
-      type: "POST",
-      contentType: "application/json",
-      data: JSON.stringify({
-        "coffee": val.coffee,
-        "emailAddress": val.emailAddress,
-        "flavor": val.flavor,
-        "id": val.id,
-        "size": val.size,
-        "strength": val.strength
-      }),
+    $.ajax({
+      method: "GET",
+      url: this.serverUrl,
       success: function(serverResponse) {
-        console.log(serverResponse);
+        if (serverResponse.length === 0) {
+          $.ajax(this.url, {
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+              "coffee": val.coffee,
+              "emailAddress": val.emailAddress,
+              "flavor": val.flavor,
+              "id": val.id,
+              "size": val.size,
+              "strength": val.strength
+            }),
+            success: function(serverResponse) {
+              console.log(serverResponse);
+            },
+            error: function(xhr) {
+              alert(xhr.responseText);
+            }
+          });
+        } else {
+          var match = false;
+          for (var i = 0; i < serverResponse.length; i++) {
+            if (serverResponse[i].emailAddress === val.emailAddress) {
+              match = true;
+            }
+          }
+          console.log(match);
+          if (!match) {
+            $.ajax(this.url, {
+              type: "POST",
+              contentType: "application/json",
+              data: JSON.stringify({
+                "coffee": val.coffee,
+                "emailAddress": val.emailAddress,
+                "flavor": val.flavor,
+                "id": val.id,
+                "size": val.size,
+                "strength": val.strength
+              }),
+              success: function(serverResponse) {
+                console.log(serverResponse);
+              },
+              error: function(xhr) {
+                alert(xhr.responseText);
+              }
+            });
+          } else {
+            console.log("Order for " + val.emailAddress + " has been updated");
+            $.ajax({
+              method: "GET",
+              url: this.url,
+              success: function(serverResponse) {
+                console.log(serverResponse);
+                for (var i = 0; i < serverResponse.length; i++) {
+                  if (serverResponse[i].emailAddress == key) {
+                    var id = serverResponse[i].id;
+                  }
+                }
+                console.log(id);
+                $.ajax({
+                  method: "PUT",
+                  url: this.url + "/" + id,
+                  contentType: "application/json",
+                  data: JSON.stringify({
+                    "coffee": val.coffee,
+                    "emailAddress": val.emailAddress,
+                    "flavor": val.flavor,
+                    "id": val.id,
+                    "size": val.size,
+                    "strength": val.strength
+                  }),
+                  // when debug, use the following url instead
+                  // url: this.url + id,
+                  success: function(serverResponse) {
+                    console.log(this.url);
+                    console.log(serverResponse);
+                    console.log("Update item " + id);
+                  },
+                  error: function(xhr) {
+                    alert(xhr.responseText);
+                  }
+                });
+              },
+              error: function(xhr) {
+                alert(xhr.responseText);
+              }
+            });
+          }
+        }
       },
       error: function(xhr) {
         alert(xhr.responseText);
       }
     });
+
+    // $.ajax(this.serverUrl, {
+    //   type: "POST",
+    //   contentType: "application/json",
+    //   data: JSON.stringify({
+    //     "coffee": val.coffee,
+    //     "emailAddress": val.emailAddress,
+    //     "flavor": val.flavor,
+    //     "id": val.id,
+    //     "size": val.size,
+    //     "strength": val.strength
+    //   }),
+    //   success: function(serverResponse) {
+    //     console.log(serverResponse);
+    //   },
+    //   error: function(xhr) {
+    //     alert(xhr.responseText);
+    //   }
+    // });
   };
 
   RemoteDataStore.prototype.getAll = function(cb) {
@@ -68,9 +167,10 @@
       url: this.serverUrl,
       success: function(serverResponse) {
         console.log(serverResponse);
+        var id = 0;
         for (var i = 0; i < serverResponse.length; i++) {
           if (serverResponse[i].emailAddress == key) {
-            var id = serverResponse[i].id;
+            id = serverResponse[i].id;
           }
         }
         console.log(id);
@@ -124,6 +224,9 @@
           }
         });
       },
+      error: function(xhr) {
+        alert(xhr.responseText);
+      }
     });
   };
 
