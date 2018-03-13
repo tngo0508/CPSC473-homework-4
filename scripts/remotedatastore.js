@@ -47,7 +47,6 @@
               match = true;
             }
           }
-          console.log(match);
           if (!match) {
             $.ajax(this.url, {
               type: "POST",
@@ -79,7 +78,6 @@
                     var id = serverResponse[i].id;
                   }
                 }
-                console.log(id);
                 $.ajax({
                   method: "PUT",
                   url: this.url + "/" + id,
@@ -95,7 +93,6 @@
                   // when debug, use the following url instead
                   // url: this.url + id,
                   success: function(serverResponse) {
-                    console.log(this.url);
                     console.log(serverResponse);
                     console.log("Update item " + id);
                   },
@@ -115,25 +112,6 @@
         alert(xhr.responseText);
       }
     });
-
-    // $.ajax(this.serverUrl, {
-    //   type: "POST",
-    //   contentType: "application/json",
-    //   data: JSON.stringify({
-    //     "coffee": val.coffee,
-    //     "emailAddress": val.emailAddress,
-    //     "flavor": val.flavor,
-    //     "id": val.id,
-    //     "size": val.size,
-    //     "strength": val.strength
-    //   }),
-    //   success: function(serverResponse) {
-    //     console.log(serverResponse);
-    //   },
-    //   error: function(xhr) {
-    //     alert(xhr.responseText);
-    //   }
-    // });
   };
 
   RemoteDataStore.prototype.getAll = function(cb) {
@@ -173,7 +151,6 @@
             id = serverResponse[i].id;
           }
         }
-        console.log(id);
         $.ajax({
           method: "GET",
           url: this.url + "/" + id,
@@ -208,7 +185,6 @@
             var id = serverResponse[i].id;
           }
         }
-        console.log(id);
         $.ajax({
           method: "DELETE",
           url: this.url + "/" + id,
